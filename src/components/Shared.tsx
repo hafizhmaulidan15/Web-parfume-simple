@@ -11,6 +11,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ toggleCart, cartItemCount }) => {
   const location = useLocation();
   const isStore = location.pathname === '/';
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 transition-all duration-300">
@@ -18,7 +19,10 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleCart, cartItemCount }) => 
         <div className="flex justify-between items-center h-20">
 
           <div className="flex items-center space-x-8">
-            <button className="text-zinc-400 hover:text-white lg:hidden">
+            <button
+              className="text-zinc-400 hover:text-white lg:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
               <Menu size={24} />
             </button>
             <Link to="/" className="flex-shrink-0 flex items-center cursor-pointer">
@@ -36,11 +40,11 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleCart, cartItemCount }) => 
           <div className="flex items-center space-x-6">
             <Link
               to={isStore ? '/admin' : '/'}
-              className={`text-xs uppercase tracking-widest px-3 py-1 border rounded transition-all ${!isStore ? 'border-gold-500 text-gold-500' : 'border-zinc-800 text-zinc-500 hover:text-white'}`}
+              className={`text-xs uppercase tracking-widest px-3 py-1 border rounded transition-all hidden sm:block ${!isStore ? 'border-gold-500 text-gold-500' : 'border-zinc-800 text-zinc-500 hover:text-white'}`}
             >
               {isStore ? 'Admin' : 'Store'}
             </Link>
-            <button className="text-zinc-400 hover:text-white transition-colors">
+            <button className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
               <Search size={20} />
             </button>
             <div className="relative">
@@ -53,6 +57,47 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleCart, cartItemCount }) => 
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 z-[60] bg-zinc-950 transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex flex-col h-full p-8">
+          <div className="flex justify-end mb-8">
+            <button onClick={() => setIsMobileMenuOpen(false)} className="text-zinc-400 hover:text-white">
+              <X size={24} />
+            </button>
+          </div>
+          <div className="flex flex-col space-y-6 text-center">
+            <Link
+              to="/collection"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-serif text-white hover:text-gold-400 transition-colors"
+            >
+              Collection
+            </Link>
+            <Link
+              to="/our-story"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-serif text-white hover:text-gold-400 transition-colors"
+            >
+              Our Story
+            </Link>
+            <Link
+              to="/journal"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-serif text-white hover:text-gold-400 transition-colors"
+            >
+              Journal
+            </Link>
+            <Link
+              to={isStore ? '/admin' : '/'}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-serif text-white hover:text-gold-400 transition-colors pt-8 border-t border-zinc-900"
+            >
+              {isStore ? 'Admin Panel' : 'Storefront'}
+            </Link>
           </div>
         </div>
       </div>
@@ -76,7 +121,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         onClick={onClose}
       />
-      <div className={`absolute inset-y-0 right-0 max-w-md w-full bg-zinc-900 border-l border-zinc-800 shadow-2xl transform transition-transform duration-500 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`absolute inset-y-0 right-0 w-full sm:max-w-md bg-zinc-900 border-l border-zinc-800 shadow-2xl transform transition-transform duration-500 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="h-full flex flex-col">
           <div className="px-6 py-6 border-b border-zinc-800 flex justify-between items-center">
             <h2 className="text-xl font-serif text-white">Your Selection</h2>
